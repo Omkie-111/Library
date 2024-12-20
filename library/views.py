@@ -3,7 +3,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import Author, Book, BorrowRecord
 from .serializers import AuthorSerializer, BookSerializer, BorrowRecordSerializer
+from celery import current_app
+from .tasks import generate_library_report
+import os
 from datetime import datetime
+import json
 
 class AuthorViewSet(viewsets.ModelViewSet):
     queryset = Author.objects.all()
@@ -30,3 +34,19 @@ class BorrowRecordViewSet(viewsets.ModelViewSet):
         borrow_record.book.save()
         borrow_record.save()
         return Response({"detail": "Book returned successfully."}, status=status.HTTP_200_OK)
+
+
+class ReportView(viewsets.ViewSet):
+    @action(detail=False, methods=['post'], url_path='generate')
+    def generate_report(self, request):
+
+        generate_library_report.delay()
+        return Response({"detail": "Report generation task initiated."}, status=status.HTTP_202_ACCEPTED)
+
+    @action(detail=False, methods=['get'], url_path='latest')
+    def latest_report(self, request):
+        reports_path = os.path.join(os.getcwd(), "reports")
+        latest_file = sorted(os.listdir(reports_path))[-1]
+        with open(os.path.join(reports_path, latest_file), "r") as report_file:
+            data = json.load(report_file)
+        return Response(data, status=status.HTTP_200_OK)
