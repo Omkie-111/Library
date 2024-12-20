@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 from rest_framework.decorators import action
 from .models import Author, Book, BorrowRecord
 from .serializers import AuthorSerializer, BookSerializer, BorrowRecordSerializer
@@ -22,6 +23,22 @@ class BookViewSet(viewsets.ModelViewSet):
 class BorrowRecordViewSet(viewsets.ModelViewSet):
     queryset = BorrowRecord.objects.all()
     serializer_class = BorrowRecordSerializer
+
+    def create(self, request, *args, **kwargs):
+        book_id = request.data.get("book")
+        try:
+            book = Book.objects.get(id=book_id)
+        except Book.DoesNotExist:
+            raise ValidationError({"detail": "Book does not exist."})
+
+        if book.available_copies <= 0:
+            raise ValidationError({"detail": "No available copies for this book."})
+
+        # Reduce the number of available copies
+        book.available_copies -= 1
+        book.save()
+
+        return super().create(request, *args, **kwargs)
 
     @action(detail=True, methods=['put'], url_path='return')
     def return_book(self, request, pk=None):

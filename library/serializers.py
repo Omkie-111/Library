@@ -18,3 +18,4 @@ class BorrowRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = BorrowRecord
         fields = "__all__"
+        read_only_fields = ["return_date"]
