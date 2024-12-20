@@ -1,0 +1,38 @@
+version: '3'
+
+volumes:
+  reports:
+    driver: local
+
+services:
+  # Django service
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - reports:/app/reports
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - celery
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/admin"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
+
+  # Redis service for Celery
+  redis:
+    image: redis:alpine
+
+  # Celery worker
+  celery:
+    build: .
+    command: celery -A library_management worker --loglevel=info
+    volumes:
+      - reports:/app/reports
+    depends_on:
+      - redis
