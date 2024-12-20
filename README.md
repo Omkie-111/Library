@@ -20,6 +20,7 @@ This is a simple API built using Django and Django Rest Framework for managing b
     - [**Borrow Endpoints**](#borrow)
     - [**Reports Endpoints**](#reports)
 5. [**Testing**](#testing)
+6. [**Deployment**](#deployment)
 
 ---
 
@@ -84,7 +85,7 @@ To run the development server, execute:
 python manage.py runserver
 ```
 
-This will start the server on `http://127.0.0.1:8000/` by default.
+This will start the server on `http://127.0.0.1:8000/` by default. For further live testing check the deployment section.
 
 ---
 
@@ -399,10 +400,8 @@ This will run the test cases and provide feedback on the API functionality, ensu
 
 ---
 
-## License
+## Deployment
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is deployed on Koyeb and is live at [Live Site](https://fixed-pattie-omkie-fe37b6cc.koyeb.app/)
 
 ---
-
-This `README.md` now includes the full documentation for the **Borrow** and **Reports** endpoints.
