@@ -30,7 +30,10 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY','django-insecure-d1y$zb%&$ty3vthes_zv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['fixed-pattie-omkie-fe37b6cc.koyeb.app']
+ALLOWED_HOSTS = ['fixed-pattie-omkie-fe37b6cc.koyeb.app', 'localhost', 'https://fixed-pattie-omkie-fe37b6cc.koyeb.app']
+CSRF_TRUSTED_ORIGINS = [
+    "https://fixed-pattie-omkie-fe37b6cc.koyeb.app",
+]
 
 
 # Application definition
